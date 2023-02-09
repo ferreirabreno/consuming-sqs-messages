@@ -1,9 +1,9 @@
 package dev.breno.consumingsqsmessages;
 
-public record Book(
-        String title,
+public record Song(
+        String name,
         String author,
-        String publisher,
-        String year
+        String year,
+        String gender
 ) {
 }
