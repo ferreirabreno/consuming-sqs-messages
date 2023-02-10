@@ -1,7 +1,6 @@
 package dev.breno.consumingsqsmessages;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.amazonaws.util.json.Jackson.toJsonString;
+
 @RestController
 public class SqsController {
 
@@ -17,7 +18,7 @@ public class SqsController {
 
     @Value("${aws.sns.topic.book.arn}") String bookArn;
     @Value("${aws.sns.topic.song.arn}") String songArn;
-    @Autowired private SqsProducer sqsProducer;
+    @Autowired private SnsProducer sqsProducer;
 
     @PostMapping("/produce/message/book")
     public void sendBookMessage(@RequestBody Book book) throws JsonProcessingException {
@@ -31,11 +32,6 @@ public class SqsController {
         String jsonString = toJsonString(song);
         sqsProducer.publish(songArn, jsonString);
         logger.info("Published message in song topic for {}", song.name());
-    }
-
-    private String toJsonString(Object object) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(object);
     }
 
 }

@@ -10,10 +10,33 @@ In short, it provides a way for applications to send messages to multiple subscr
 # Configuring steps-by-steps
 1. Include dependencies in `build.gradle` file:
 ```groovy
+implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
+implementation 'io.awspring.cloud:spring-cloud-aws-messaging:2.4.4'
 ```
 
-2. Create an Consumer class and use @SqsListener in methods to receive messages from SQS queue.
+2. Configure application.yaml file:
+```yaml
+cloud:
+  aws:
+    region:
+      static: ${AWS_REGION:us-east-1}
+      auto: false
+    credentials:
+      access-key: ${AWS_ACCESS_KEY:test}
+      secret-key: ${AWS_SECRET_KEY:test}
+    end-point:
+      uri: ${AWS_ENDPOINT:http://localhost:4566}
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration
+```
+
+3. Create an Consumer class and use @SqsListener in methods to receive messages from SQS queue.
 ```java
 public class Consumer {
 
@@ -27,15 +50,15 @@ public class Consumer {
 }
 ```
 
-3. Configure AmazonSNS and AmazonSQS beans:
+4. Configure AmazonSNS and AmazonSQS beans:
 ```java
 @Configuration
 public class AwsConfig {
 
-    @Value("${aws.region}") private String awsRegion;
-    @Value("${aws.endpoint}") private String awsEndpoint;
-    @Value("${aws.accessKeyId}") private String accessKey;
-    @Value("${aws.secretKey}") private String secretKey;
+    @Value("${cloud.aws.region.static}") private String awsRegion;
+    @Value("${cloud.aws.end-point.uri}") private String awsEndpoint;
+    @Value("${cloud.aws.credential.access-key}") private String accessKey;
+    @Value("${cloud.aws.credential.secret-key}") private String secretKey;
 
     @Bean
     public AmazonSNS amazonSNS() {
@@ -61,10 +84,10 @@ public class AwsConfig {
 }
 ```
 
-4. Create an Producer Class:
+5. Create an Producer Class:
 ```java
 @Component
-public class SqsProducer {
+public class SnsProducer {
 
     @Autowired private AmazonSNS amazonSNS;
 

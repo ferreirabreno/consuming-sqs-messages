@@ -17,3 +17,20 @@ aws:
   region: ${AWS_REGION:us-east-1}
   endpoint: ${AWS_ENDPOINT:http://localhost:4566}
 
+cloud:
+  aws:
+    region:
+      static: ${AWS_REGION:us-east-1}
+      auto: false
+    credentials:
+      access-key: ${AWS_ACCESS_KEY:test}
+      secret-key: ${AWS_SECRET_KEY:test}
+    end-point:
+      uri: ${AWS_ENDPOINT:http://localhost:4566}
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration
