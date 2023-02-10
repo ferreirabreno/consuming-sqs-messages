@@ -15,8 +15,8 @@ public class SqsController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.aws.sns.book.arn}") String bookArn;
-    @Value("${app.aws.sns.song.arn}") String songArn;
+    @Value("${aws.sns.topic.book.arn}") String bookArn;
+    @Value("${aws.sns.topic.song.arn}") String songArn;
     @Autowired private SqsProducer sqsProducer;
 
     @PostMapping("/produce/message/book")
@@ -29,7 +29,7 @@ public class SqsController {
     @PostMapping("/produce/message/song")
     public void sendSongMessage(@RequestBody Song song) throws JsonProcessingException {
         String jsonString = toJsonString(song);
-        sqsProducer.publish(bookArn, jsonString);
+        sqsProducer.publish(songArn, jsonString);
         logger.info("Published message in song topic for {}", song.name());
     }
 

@@ -1,0 +1,19 @@
+# aws configuration
+aws:
+  sqs:
+    queue:
+      book:
+        name: book-queue
+      song:
+        name: song-queue
+  sns:
+    topic:
+      book:
+        arn: arn:aws:sns:us-east-1:000000000000:book-topic
+      song:
+        arn: arn:aws:sns:us-east-1:000000000000:song-topic
+  accessKey: ${AWS_ACCESS_KEY:test}
+  secretKey: ${AWS_SECRET_KEY:test}
+  region: ${AWS_REGION:us-east-1}
+  endpoint: ${AWS_ENDPOINT:http://localhost:4566}
+

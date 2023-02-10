@@ -32,20 +32,32 @@ public class Consumer {
 @Configuration
 public class AwsConfig {
 
+    @Value("${aws.region}") private String awsRegion;
+    @Value("${aws.endpoint}") private String awsEndpoint;
+    @Value("${aws.accessKeyId}") private String accessKey;
+    @Value("${aws.secretKey}") private String secretKey;
+
     @Bean
     public AmazonSNS amazonSNS() {
+        var endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(awsEndpoint, awsRegion);
+        var credentialsProvider = new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey));
+
         return AmazonSNSClientBuilder.standard()
-                .withRegion(Regions.US_EAST_1)
+                .withEndpointConfiguration(endpointConfiguration)
+                .withCredentials(credentialsProvider)
                 .build();
     }
 
     @Bean
-    public AmazonSQS amazonSQSAsync() {
-        return AmazonSQSClientBuilder.standard()
-                .withRegion(Regions.US_EAST_1)
+    public AmazonSQSAsync amazonSQS() {
+        var endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(awsEndpoint, awsRegion);
+        var credentialsProvider = new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey));
+
+        return AmazonSQSAsyncClientBuilder.standard()
+                .withEndpointConfiguration(endpointConfiguration)
+                .withCredentials(credentialsProvider)
                 .build();
     }
-
 }
 ```
 

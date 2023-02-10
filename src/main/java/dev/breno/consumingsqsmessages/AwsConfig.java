@@ -16,7 +16,7 @@ public class AwsConfig {
 
     @Value("${aws.region}") private String awsRegion;
     @Value("${aws.endpoint}") private String awsEndpoint;
-    @Value("${aws.accessKeyId}") private String accessKey;
+    @Value("${aws.accessKey}") private String accessKey;
     @Value("${aws.secretKey}") private String secretKey;
 
     @Bean
@@ -40,4 +40,5 @@ public class AwsConfig {
                 .withCredentials(credentialsProvider)
                 .build();
     }
+
 }
