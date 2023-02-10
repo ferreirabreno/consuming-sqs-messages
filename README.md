@@ -27,6 +27,42 @@ public class Consumer {
 }
 ```
 
+3. Configure AmazonSNS and AmazonSQS beans:
+```java
+@Configuration
+public class AwsConfig {
+
+    @Bean
+    public AmazonSNS amazonSNS() {
+        return AmazonSNSClientBuilder.standard()
+                .withRegion(Regions.US_EAST_1)
+                .build();
+    }
+
+    @Bean
+    public AmazonSQS amazonSQSAsync() {
+        return AmazonSQSClientBuilder.standard()
+                .withRegion(Regions.US_EAST_1)
+                .build();
+    }
+
+}
+```
+
+4. Create an Producer Class:
+```java
+@Component
+public class SqsProducer {
+
+    @Autowired private AmazonSNS amazonSNS;
+
+    public void publish(String topicArn, String message) {
+        PublishRequest publishRequest = new PublishRequest(topicArn, message);
+        amazonSNS.publish(publishRequest);
+    }
+}
+```
+
 # References
 
 [AWS Developer Guide](https://docs.aws.amazon.com/en_us/sns/latest/dg/Welcome.html)
@@ -35,6 +71,6 @@ public class Consumer {
 
 - [x] Create docker-compose.yml with Localstack service
 - [x] Create script to provisioning SQS and SNS in Localstack
-- [ ] Create a Message POJO
-- [ ] Create a Message Consumer (pooling from Amazon SQS)
-- [ ] Create a Message Producer (publish in Amazon SNS)
+- [x] Create a Message POJO
+- [x] Create a Message Consumer (pooling from Amazon SQS)
+- [x] Create a Message Producer (publish in Amazon SNS)
